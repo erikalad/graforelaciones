@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#008080", "font": {"color": "white"}, "id": "#lopezreydelcash", "label": "#lopezreydelcash", "shape": "dot"}, {"color": "#009c9c", "font": {"color": "white"}, "id": "#charropoliticopodcast", "label": "#charropoliticopodcast", "shape": "dot"}, {"color": "#009393", "font": {"color": "white"}, "id": "#4t", "label": "#4t", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#4tavanza", "label": "#4tavanza", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#alegobernadora", "label": "#alegobernadora", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#irc", "label": "#irc", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#jefadegobierno", "label": "#jefadegobierno", "shape": "dot"}, {"color": "#00ffff", "font": {"color": "white"}, "id": "#tigresdelnorte", "label": "#tigresdelnorte", "shape": "dot"}, {"color": "#008c8c", "font": {"color": "white"}, "id": "#ciudaddelconocimientoylaeducacion", "label": "#ciudaddelconocimientoylaeducacion", "shape": "dot"}, {"color": "#00b9b9", "font": {"color": "white"}, "id": "#hijosdemx", "label": "#hijosdemx", "shape": "dot"}, {"color": "#00b9b9", "font": {"color": "white"}, "id": "#mxconpi\u00f1a", "label": "#mxconpi\u00f1a", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#queretaro", "label": "#queretaro", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#delfinarata", "label": "#delfinarata", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#claudiamamalona", "label": "#claudiamamalona", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#l12", "label": "#l12", "shape": "dot"}, {"color": "#00d4d4", "font": {"color": "white"}, "id": "#conmarcelosi", "label": "#conmarcelosi", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#bienestarentucolonia", "label": "#bienestarentucolonia", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#puebla", "label": "#puebla", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#cartelinmobiliario", "label": "#cartelinmobiliario", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#avanzadanacionalgamcdmx", "label": "#avanzadanacionalgamcdmx", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#conmarcelosigue", "label": "#conmarcelosigue", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#movimientoprogresistajalisco", "label": "#movimientoprogresistajalisco", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#nomamar", "label": "#nomamar", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#aifa", "label": "#aifa", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#laredcincoradio", "label": "#laredcincoradio", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#pasaporte", "label": "#pasaporte", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#iheartradio", "label": "#iheartradio", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marcelova", "label": "#marcelova", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#cuartatransformacion", "label": "#cuartatransformacion", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#tercergradodeportivo", "label": "#tercergradodeportivo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#avanzadamc_cdmx", "label": "#avanzadamc_cdmx", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#checalanota", "label": "#checalanota", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#morena", "label": "#morena", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#santino", "label": "#santino", "shape": "dot"}, {"color": "#00a1a1", "font": {"color": "white"}, "id": "#mexico", "label": "#mexico", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#quintanaroo", "label": "#quintanaroo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#solidaridad", "label": "#solidaridad", "shape": "dot"}, {"color": "#008989", "font": {"color": "white"}, "id": "#jovenesmarcelo", "label": "#jovenesmarcelo", "shape": "dot"}, {"color": "#00adad", "font": {"color": "white"}, "id": "#cdmx", "label": "#cdmx", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#preveniresvivir", "label": "#preveniresvivir", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#simulacronacional2023", "label": "#simulacronacional2023", "shape": "dot"}, {"color": "#008c8c", "font": {"color": "white"}, "id": "#ine", "label": "#ine", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#tgd", "label": "#tgd", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#fakenewsalert", "label": "#fakenewsalert", "shape": "dot"}, {"color": "#009090", "font": {"color": "white"}, "id": "#elcaminodemexico", "label": "#elcaminodemexico", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#lopezdementegenocida", "label": "#lopezdementegenocida", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#morenaconmdemuerte", "label": "#morenaconmdemuerte", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#guacamayaleaks", "label": "#guacamayaleaks", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#guacamayanews", "label": "#guacamayanews", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ma\u00f1anera", "label": "#ma\u00f1anera", "shape": "dot"}, {"color": "#008c8c", "font": {"color": "white"}, "id": "#metrocdmx", "label": "#metrocdmx", "shape": "dot"}, {"color": "#008989", "font": {"color": "white"}, "id": "#ultimahora", "label": "#ultimahora", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#bienestar", "label": "#bienestar", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#jornadadesalud", "label": "#jornadadesalud", "shape": "dot"}, {"color": "#009898", "font": {"color": "white"}, "id": "#marceloebrard", "label": "#marceloebrard", "shape": "dot"}, {"color": "#008c8c", "font": {"color": "white"}, "id": "#esclaudia", "label": "#esclaudia", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#liberenaely", "label": "#liberenaely", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#agenda", "label": "#agenda", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#pilares", "label": "#pilares", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#avanzadanacional", "label": "#avanzadanacional", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#pegasus", "label": "#pegasus", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#lunesdeobras", "label": "#lunesdeobras", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#ebrardva", "label": "#ebrardva", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ciudaddemexico", "label": "#ciudaddemexico", "shape": "dot"}, {"color": "#008e8e", "font": {"color": "white"}, "id": "#segurodedesempleoactivo", "label": "#segurodedesempleoactivo", "shape": "dot"}, {"color": "#009c9c", "font": {"color": "white"}, "id": "#trabajoenlaciudad", "label": "#trabajoenlaciudad", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#tiktok", "label": "#tiktok", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#femec", "label": "#femec", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#feministasconmarcelo", "label": "#feministasconmarcelo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#eu", "label": "#eu", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#mejoropcion", "label": "#mejoropcion", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#alertaadn", "label": "#alertaadn", "shape": "dot"}, {"color": "#008989", "font": {"color": "white"}, "id": "#whatsapp", "label": "#whatsapp", "shape": "dot"}, {"color": "#009898", "font": {"color": "white"}, "id": "#poderjudicialcorrupto", "label": "#poderjudicialcorrupto", "shape": "dot"}, {"color": "#009a9a", "font": {"color": "white"}, "id": "#votomasivopormorena2023y2024", "label": "#votomasivopormorena2023y2024", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#todaslasvoces", "label": "#todaslasvoces", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#romaymilan", "label": "#romaymilan", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#oaxaca", "label": "#oaxaca", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#relevante", "label": "#relevante", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#feriadelbienestar", "label": "#feriadelbienestar", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#avisoimportante", "label": "#avisoimportante", "shape": "dot"}, {"color": "#009595", "font": {"color": "white"}, "id": "#laprevencionesnuestrafuerza", "label": "#laprevencionesnuestrafuerza", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#avanzadanacionalgam", "label": "#avanzadanacionalgam", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#audiolibro", "label": "#audiolibro", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#fueralopez", "label": "#fueralopez", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#linea12noseolvida", "label": "#linea12noseolvida", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#lopeznarcopresidente", "label": "#lopeznarcopresidente", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#morenacuevadedelincuentes", "label": "#morenacuevadedelincuentes", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#todesconelcarnal", "label": "#todesconelcarnal", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#prianrdmc", "label": "#prianrdmc", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#marcelopresidente", "label": "#marcelopresidente", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#honestidadquedaresultados", "label": "#honestidadquedaresultados", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#yabasta", "label": "#yabasta", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#hoyyash", "label": "#hoyyash", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#pollsmx", "label": "#pollsmx", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#sre", "label": "#sre", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#joseluismora", "label": "#joseluismora", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#tlatelolco", "label": "#tlatelolco", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#noti12", "label": "#noti12", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#adanaugusto", "label": "#adanaugusto", "shape": "dot"}, {"color": "#008c8c", "font": {"color": "white"}, "id": "#amlo", "label": "#amlo", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#breakingnews", "label": "#breakingnews", "shape": "dot"}, {"color": "#009090", "font": {"color": "white"}, "id": "#claudiasheinbaum", "label": "#claudiasheinbaum", "shape": "dot"}, {"color": "#008989", "font": {"color": "white"}, "id": "#corcholatas", "label": "#corcholatas", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#siguemeytesigo", "label": "#siguemeytesigo", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#unextra\u00f1oenemigo", "label": "#unextra\u00f1oenemigo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#almomento", "label": "#almomento", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#pasaportemexicano", "label": "#pasaportemexicano", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#sabiasque", "label": "#sabiasque", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#trabajocdmx", "label": "#trabajocdmx", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ciudadconorden", "label": "#ciudadconorden", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ciudaddelbienestar", "label": "#ciudaddelbienestar", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#eloctagono", "label": "#eloctagono", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#reydelcash", "label": "#reydelcash", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#lopezobrador", "label": "#lopezobrador", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#rosalia", "label": "#rosalia", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#zocalo", "label": "#zocalo", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#contralinea", "label": "#contralinea", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#linea9", "label": "#linea9", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#periodismodeinvestigacion", "label": "#periodismodeinvestigacion", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ffaa", "label": "#ffaa", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#mexicoeu", "label": "#mexicoeu", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#lineab", "label": "#lineab", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#metro", "label": "#metro", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#noticias", "label": "#noticias", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#viral", "label": "#viral", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#esclaudiaasesina", "label": "#esclaudiaasesina", "shape": "dot"}, {"color": "#008484", "font": {"color": "white"}, "id": "#esclaudiacorrupta", "label": "#esclaudiacorrupta", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#asesina", "label": "#asesina", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#eeuu", "label": "#eeuu", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#juntosconstruimoslapaz", "label": "#juntosconstruimoslapaz", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#derechoshumanoslaborales", "label": "#derechoshumanoslaborales", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#alerta", "label": "#alerta", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ift", "label": "#ift", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#simulacronacional", "label": "#simulacronacional", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#loultimo", "label": "#loultimo", "shape": "dot"}, {"color": "#008787", "font": {"color": "white"}, "id": "#powerranking", "label": "#powerranking", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#reddecooperativas", "label": "#reddecooperativas", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marceloeslarespuesta", "label": "#marceloeslarespuesta", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marcelosigue", "label": "#marcelosigue", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#ar2tv\ud83e\udd8e\ud83d\udcfa", "label": "#ar2tv\ud83e\udd8e\ud83d\udcfa", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#dea", "label": "#dea", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#espionaje", "label": "#espionaje", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#estadosunidos", "label": "#estadosunidos", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#pentagono", "label": "#pentagono", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#conacytnocumple", "label": "#conacytnocumple", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#conacytnopaga", "label": "#conacytnopaga", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#niunvotoalprianrdmc", "label": "#niunvotoalprianrdmc", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#prianrd", "label": "#prianrd", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#sabotajealmetro", "label": "#sabotajealmetro", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#amlovers", "label": "#amlovers", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#karnalmarcelo\u2757", "label": "#karnalmarcelo\u2757", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marcelovers", "label": "#marcelovers", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#valkiriaonline\u00ae", "label": "#valkiriaonline\u00ae", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#bicicleta", "label": "#bicicleta", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#paisesbajos", "label": "#paisesbajos", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#wilfredmohr", "label": "#wilfredmohr", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#contiendasinternas", "label": "#contiendasinternas", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#elecciones2024", "label": "#elecciones2024", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#columna", "label": "#columna", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#franciscochiguil", "label": "#franciscochiguil", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#chapultepecnaturalezaycultura", "label": "#chapultepecnaturalezaycultura", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#dreamers", "label": "#dreamers", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#sisepudo", "label": "#sisepudo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#felizlunes", "label": "#felizlunes", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#gobiernocdmx", "label": "#gobiernocdmx", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#avanzadanacionql", "label": "#avanzadanacionql", "shape": "dot"}, {"color": "#008282", "font": {"color": "white"}, "id": "#felizmartesatodos", "label": "#felizmartesatodos", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marchelitopresidente2024", "label": "#marchelitopresidente2024", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#bartlett", "label": "#bartlett", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#cfe", "label": "#cfe", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#tlalpan", "label": "#tlalpan", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#narcopan", "label": "#narcopan", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#nuncaseraspresidenta", "label": "#nuncaseraspresidenta", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#marcelo", "label": "#marcelo", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#laciudadylatransformacion", "label": "#laciudadylatransformacion", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#charlas", "label": "#charlas", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#dft", "label": "#dft", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#impunidad", "label": "#impunidad", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#linea12", "label": "#linea12", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "label": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#quetal", "label": "#quetal", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#tragedia", "label": "#tragedia", "shape": "dot"}, {"color": "#008080", "font": {"color": "white"}, "id": "#citaspasaporte", "label": "#citaspasaporte", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "#4t", "to": "#4tavanza", "value": 2}, {"from": "#4t", "to": "#checalanota", "value": 1}, {"from": "#4t", "to": "#morena", "value": 1}, {"from": "#4t", "to": "#marceloebrard", "value": 1}, {"from": "#4t", "to": "#votomasivopormorena2023y2024", "value": 1}, {"from": "#4t", "to": "#felizlunes", "value": 1}, {"from": "#alegobernadora", "to": "#delfinarata", "value": 2}, {"from": "#irc", "to": "#jefadegobierno", "value": 1}, {"from": "#jefadegobierno", "to": "#bienestarentucolonia", "value": 2}, {"from": "#jefadegobierno", "to": "#trabajoenlaciudad", "value": 1}, {"from": "#tigresdelnorte", "to": "#claudiasheinbaum", "value": 1}, {"from": "#tigresdelnorte", "to": "#lopezobrador", "value": 1}, {"from": "#tigresdelnorte", "to": "#rosalia", "value": 1}, {"from": "#tigresdelnorte", "to": "#zocalo", "value": 1}, {"from": "#hijosdemx", "to": "#mxconpi\u00f1a", "value": 25}, {"from": "#claudiamamalona", "to": "#l12", "value": 1}, {"from": "#conmarcelosi", "to": "#avanzadanacionalgamcdmx", "value": 4}, {"from": "#conmarcelosi", "to": "#conmarcelosigue", "value": 2}, {"from": "#conmarcelosi", "to": "#movimientoprogresistajalisco", "value": 2}, {"from": "#conmarcelosi", "to": "#avanzadamc_cdmx", "value": 1}, {"from": "#conmarcelosi", "to": "#mexico", "value": 2}, {"from": "#conmarcelosi", "to": "#jovenesmarcelo", "value": 4}, {"from": "#conmarcelosi", "to": "#elcaminodemexico", "value": 4}, {"from": "#conmarcelosi", "to": "#marceloebrard", "value": 2}, {"from": "#conmarcelosi", "to": "#avanzadanacional", "value": 4}, {"from": "#conmarcelosi", "to": "#ebrardva", "value": 2}, {"from": "#conmarcelosi", "to": "#femec", "value": 1}, {"from": "#conmarcelosi", "to": "#feministasconmarcelo", "value": 1}, {"from": "#conmarcelosi", "to": "#audiolibro", "value": 1}, {"from": "#conmarcelosi", "to": "#avanzadanacionql", "value": 2}, {"from": "#conmarcelosi", "to": "#felizmartesatodos", "value": 2}, {"from": "#bienestarentucolonia", "to": "#trabajoenlaciudad", "value": 1}, {"from": "#bienestarentucolonia", "to": "#honestidadquedaresultados", "value": 1}, {"from": "#conmarcelosigue", "to": "#movimientoprogresistajalisco", "value": 2}, {"from": "#laredcincoradio", "to": "#pasaporte", "value": 1}, {"from": "#pasaporte", "to": "#whatsapp", "value": 2}, {"from": "#pasaporte", "to": "#sre", "value": 2}, {"from": "#checalanota", "to": "#morena", "value": 1}, {"from": "#mexico", "to": "#quintanaroo", "value": 1}, {"from": "#mexico", "to": "#solidaridad", "value": 1}, {"from": "#mexico", "to": "#cdmx", "value": 4}, {"from": "#mexico", "to": "#ine", "value": 6}, {"from": "#mexico", "to": "#metrocdmx", "value": 4}, {"from": "#mexico", "to": "#ultimahora", "value": 4}, {"from": "#mexico", "to": "#marceloebrard", "value": 2}, {"from": "#mexico", "to": "#oaxaca", "value": 1}, {"from": "#mexico", "to": "#relevante", "value": 1}, {"from": "#mexico", "to": "#metro", "value": 4}, {"from": "#mexico", "to": "#noticias", "value": 4}, {"from": "#mexico", "to": "#viral", "value": 4}, {"from": "#mexico", "to": "#eeuu", "value": 1}, {"from": "#mexico", "to": "#juntosconstruimoslapaz", "value": 1}, {"from": "#mexico", "to": "#avanzadanacionql", "value": 2}, {"from": "#mexico", "to": "#felizmartesatodos", "value": 2}, {"from": "#quintanaroo", "to": "#solidaridad", "value": 1}, {"from": "#jovenesmarcelo", "to": "#marceloeslarespuesta", "value": 1}, {"from": "#jovenesmarcelo", "to": "#marcelosigue", "value": 1}, {"from": "#cdmx", "to": "#preveniresvivir", "value": 3}, {"from": "#cdmx", "to": "#simulacronacional2023", "value": 3}, {"from": "#cdmx", "to": "#metrocdmx", "value": 4}, {"from": "#cdmx", "to": "#ultimahora", "value": 4}, {"from": "#cdmx", "to": "#liberenaely", "value": 2}, {"from": "#cdmx", "to": "#alertaadn", "value": 1}, {"from": "#cdmx", "to": "#joseluismora", "value": 1}, {"from": "#cdmx", "to": "#tlatelolco", "value": 1}, {"from": "#cdmx", "to": "#claudiasheinbaum", "value": 1}, {"from": "#cdmx", "to": "#ciudadconorden", "value": 1}, {"from": "#cdmx", "to": "#ciudaddelbienestar", "value": 1}, {"from": "#cdmx", "to": "#metro", "value": 4}, {"from": "#cdmx", "to": "#noticias", "value": 4}, {"from": "#cdmx", "to": "#viral", "value": 4}, {"from": "#cdmx", "to": "#dreamers", "value": 1}, {"from": "#cdmx", "to": "#sisepudo", "value": 1}, {"from": "#preveniresvivir", "to": "#simulacronacional2023", "value": 3}, {"from": "#simulacronacional2023", "to": "#laprevencionesnuestrafuerza", "value": 1}, {"from": "#tgd", "to": "#ar2tv\ud83e\udd8e\ud83d\udcfa", "value": 1}, {"from": "#elcaminodemexico", "to": "#femec", "value": 1}, {"from": "#elcaminodemexico", "to": "#feministasconmarcelo", "value": 1}, {"from": "#lopezdementegenocida", "to": "#morenaconmdemuerte", "value": 2}, {"from": "#guacamayaleaks", "to": "#guacamayanews", "value": 1}, {"from": "#guacamayaleaks", "to": "#ma\u00f1anera", "value": 1}, {"from": "#guacamayanews", "to": "#ma\u00f1anera", "value": 1}, {"from": "#metrocdmx", "to": "#ultimahora", "value": 5}, {"from": "#metrocdmx", "to": "#fueralopez", "value": 1}, {"from": "#metrocdmx", "to": "#linea12noseolvida", "value": 1}, {"from": "#metrocdmx", "to": "#lopeznarcopresidente", "value": 1}, {"from": "#metrocdmx", "to": "#morenacuevadedelincuentes", "value": 1}, {"from": "#metrocdmx", "to": "#metro", "value": 4}, {"from": "#metrocdmx", "to": "#noticias", "value": 4}, {"from": "#metrocdmx", "to": "#viral", "value": 4}, {"from": "#ultimahora", "to": "#metro", "value": 4}, {"from": "#ultimahora", "to": "#noticias", "value": 4}, {"from": "#ultimahora", "to": "#viral", "value": 4}, {"from": "#bienestar", "to": "#jornadadesalud", "value": 2}, {"from": "#marceloebrard", "to": "#marcelopresidente", "value": 2}, {"from": "#marceloebrard", "to": "#adanaugusto", "value": 4}, {"from": "#marceloebrard", "to": "#amlo", "value": 4}, {"from": "#marceloebrard", "to": "#breakingnews", "value": 4}, {"from": "#marceloebrard", "to": "#claudiasheinbaum", "value": 4}, {"from": "#marceloebrard", "to": "#corcholatas", "value": 4}, {"from": "#marceloebrard", "to": "#siguemeytesigo", "value": 4}, {"from": "#marceloebrard", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#marceloebrard", "to": "#avanzadanacionql", "value": 2}, {"from": "#marceloebrard", "to": "#felizmartesatodos", "value": 2}, {"from": "#agenda", "to": "#pilares", "value": 3}, {"from": "#ciudaddemexico", "to": "#segurodedesempleoactivo", "value": 1}, {"from": "#ciudaddemexico", "to": "#trabajoenlaciudad", "value": 1}, {"from": "#segurodedesempleoactivo", "to": "#trabajoenlaciudad", "value": 7}, {"from": "#trabajoenlaciudad", "to": "#honestidadquedaresultados", "value": 1}, {"from": "#trabajoenlaciudad", "to": "#trabajocdmx", "value": 1}, {"from": "#trabajoenlaciudad", "to": "#derechoshumanoslaborales", "value": 2}, {"from": "#trabajoenlaciudad", "to": "#reddecooperativas", "value": 1}, {"from": "#femec", "to": "#feministasconmarcelo", "value": 1}, {"from": "#whatsapp", "to": "#sre", "value": 2}, {"from": "#whatsapp", "to": "#almomento", "value": 1}, {"from": "#whatsapp", "to": "#pasaportemexicano", "value": 1}, {"from": "#whatsapp", "to": "#sabiasque", "value": 1}, {"from": "#poderjudicialcorrupto", "to": "#votomasivopormorena2023y2024", "value": 11}, {"from": "#oaxaca", "to": "#relevante", "value": 1}, {"from": "#avisoimportante", "to": "#laprevencionesnuestrafuerza", "value": 2}, {"from": "#fueralopez", "to": "#linea12noseolvida", "value": 1}, {"from": "#fueralopez", "to": "#lopeznarcopresidente", "value": 1}, {"from": "#fueralopez", "to": "#morenacuevadedelincuentes", "value": 1}, {"from": "#linea12noseolvida", "to": "#lopeznarcopresidente", "value": 1}, {"from": "#linea12noseolvida", "to": "#morenacuevadedelincuentes", "value": 1}, {"from": "#linea12noseolvida", "to": "#impunidad", "value": 1}, {"from": "#linea12noseolvida", "to": "#linea12", "value": 1}, {"from": "#linea12noseolvida", "to": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "value": 1}, {"from": "#linea12noseolvida", "to": "#quetal", "value": 1}, {"from": "#linea12noseolvida", "to": "#tragedia", "value": 1}, {"from": "#lopeznarcopresidente", "to": "#morenacuevadedelincuentes", "value": 1}, {"from": "#pollsmx", "to": "#powerranking", "value": 2}, {"from": "#joseluismora", "to": "#tlatelolco", "value": 1}, {"from": "#adanaugusto", "to": "#amlo", "value": 4}, {"from": "#adanaugusto", "to": "#breakingnews", "value": 4}, {"from": "#adanaugusto", "to": "#claudiasheinbaum", "value": 4}, {"from": "#adanaugusto", "to": "#corcholatas", "value": 4}, {"from": "#adanaugusto", "to": "#siguemeytesigo", "value": 4}, {"from": "#adanaugusto", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#amlo", "to": "#breakingnews", "value": 4}, {"from": "#amlo", "to": "#claudiasheinbaum", "value": 4}, {"from": "#amlo", "to": "#corcholatas", "value": 4}, {"from": "#amlo", "to": "#siguemeytesigo", "value": 4}, {"from": "#amlo", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#amlo", "to": "#niunvotoalprianrdmc", "value": 1}, {"from": "#amlo", "to": "#prianrd", "value": 1}, {"from": "#amlo", "to": "#sabotajealmetro", "value": 1}, {"from": "#breakingnews", "to": "#claudiasheinbaum", "value": 4}, {"from": "#breakingnews", "to": "#corcholatas", "value": 4}, {"from": "#breakingnews", "to": "#siguemeytesigo", "value": 4}, {"from": "#breakingnews", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#claudiasheinbaum", "to": "#corcholatas", "value": 4}, {"from": "#claudiasheinbaum", "to": "#siguemeytesigo", "value": 4}, {"from": "#claudiasheinbaum", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#claudiasheinbaum", "to": "#lopezobrador", "value": 1}, {"from": "#claudiasheinbaum", "to": "#rosalia", "value": 1}, {"from": "#claudiasheinbaum", "to": "#zocalo", "value": 1}, {"from": "#claudiasheinbaum", "to": "#gobiernocdmx", "value": 1}, {"from": "#claudiasheinbaum", "to": "#bartlett", "value": 1}, {"from": "#claudiasheinbaum", "to": "#cfe", "value": 1}, {"from": "#corcholatas", "to": "#siguemeytesigo", "value": 4}, {"from": "#corcholatas", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#siguemeytesigo", "to": "#unextra\u00f1oenemigo", "value": 4}, {"from": "#almomento", "to": "#pasaportemexicano", "value": 1}, {"from": "#almomento", "to": "#sabiasque", "value": 1}, {"from": "#pasaportemexicano", "to": "#sabiasque", "value": 1}, {"from": "#ciudadconorden", "to": "#ciudaddelbienestar", "value": 1}, {"from": "#lopezobrador", "to": "#rosalia", "value": 1}, {"from": "#lopezobrador", "to": "#zocalo", "value": 1}, {"from": "#rosalia", "to": "#zocalo", "value": 1}, {"from": "#contralinea", "to": "#linea9", "value": 1}, {"from": "#contralinea", "to": "#periodismodeinvestigacion", "value": 2}, {"from": "#linea9", "to": "#periodismodeinvestigacion", "value": 1}, {"from": "#ffaa", "to": "#mexicoeu", "value": 1}, {"from": "#metro", "to": "#noticias", "value": 4}, {"from": "#metro", "to": "#viral", "value": 4}, {"from": "#noticias", "to": "#viral", "value": 4}, {"from": "#esclaudiaasesina", "to": "#esclaudiacorrupta", "value": 2}, {"from": "#eeuu", "to": "#juntosconstruimoslapaz", "value": 1}, {"from": "#alerta", "to": "#ift", "value": 1}, {"from": "#alerta", "to": "#simulacronacional", "value": 1}, {"from": "#ift", "to": "#simulacronacional", "value": 1}, {"from": "#loultimo", "to": "#powerranking", "value": 1}, {"from": "#marceloeslarespuesta", "to": "#marcelosigue", "value": 1}, {"from": "#dea", "to": "#espionaje", "value": 1}, {"from": "#dea", "to": "#estadosunidos", "value": 1}, {"from": "#dea", "to": "#pentagono", "value": 1}, {"from": "#espionaje", "to": "#estadosunidos", "value": 1}, {"from": "#espionaje", "to": "#pentagono", "value": 1}, {"from": "#estadosunidos", "to": "#pentagono", "value": 1}, {"from": "#conacytnocumple", "to": "#conacytnopaga", "value": 2}, {"from": "#niunvotoalprianrdmc", "to": "#prianrd", "value": 1}, {"from": "#niunvotoalprianrdmc", "to": "#sabotajealmetro", "value": 1}, {"from": "#prianrd", "to": "#sabotajealmetro", "value": 1}, {"from": "#amlovers", "to": "#karnalmarcelo\u2757", "value": 1}, {"from": "#amlovers", "to": "#marcelovers", "value": 1}, {"from": "#karnalmarcelo\u2757", "to": "#marcelovers", "value": 1}, {"from": "#bicicleta", "to": "#paisesbajos", "value": 1}, {"from": "#bicicleta", "to": "#wilfredmohr", "value": 1}, {"from": "#paisesbajos", "to": "#wilfredmohr", "value": 1}, {"from": "#contiendasinternas", "to": "#elecciones2024", "value": 1}, {"from": "#dreamers", "to": "#sisepudo", "value": 1}, {"from": "#avanzadanacionql", "to": "#felizmartesatodos", "value": 2}, {"from": "#bartlett", "to": "#cfe", "value": 1}, {"from": "#impunidad", "to": "#linea12", "value": 1}, {"from": "#impunidad", "to": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "value": 1}, {"from": "#impunidad", "to": "#quetal", "value": 1}, {"from": "#impunidad", "to": "#tragedia", "value": 1}, {"from": "#linea12", "to": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "value": 1}, {"from": "#linea12", "to": "#quetal", "value": 1}, {"from": "#linea12", "to": "#tragedia", "value": 1}, {"from": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "to": "#quetal", "value": 1}, {"from": "#pasedelista1al26\u2753\ud83e\udd14\ud83d\ude44", "to": "#tragedia", "value": 1}, {"from": "#quetal", "to": "#tragedia", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
